@@ -4,8 +4,7 @@ const isProd = process.env.NODE_ENV === "production";
 const nextConfig: NextConfig = {
   output: isProd ? "export" : "standalone",
   trailingSlash: true,
-  basePath: "/GITHUB_REPO",
-  // assetPrefix: "/GITHUB_REPO/",
+  basePath: "/calculator-app",
   images: {
     unoptimized: true,
     remotePatterns: [
