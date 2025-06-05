@@ -1,12 +1,19 @@
-const isProd = process.env.NODE_ENV === 'production';
+import type { NextConfig } from "next";
 
-const nextConfig = {
-  output: 'export',
-  basePath: isProd ? '/REPO' : '',
+const isProd = process.env.NODE_ENV === "production";
+const nextConfig: NextConfig = {
+  output: isProd ? "export" : "standalone",
   trailingSlash: true,
+  basePath: "/calculator-app",
   images: {
     unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**",
+      },
+    ],
   },
 };
 
-module.exports = nextConfig;
+export default nextConfig;
