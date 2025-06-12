@@ -11,42 +11,46 @@ const ResultBox = () => {
   const { result } = useResultContext();
 
   return (
-    <section className="mt-8 w-full space-y-6 border border-primary p-4">
-      <h2 className="text-2xl font-semibold">Summary</h2>
-      <div className="divider"></div>
-      <div className="flex flex-col">
-        <div className="flex w-full items-end justify-between">
-          <p className="text-primary">Initial Deposite</p>
-          <p className="text-lg text-primary">{result.amount}</p>
-        </div>
-        <div className="flex w-full items-end justify-between">
-          <p className="text-primary">Interest</p>
-          <p className="text-lg text-primary">{result.interest}</p>
-        </div>
-        <div className="flex w-full items-end justify-between">
-          <p className="text-primary">Days</p>
-          <p className="text-lg text-primary">{result.day}</p>
-        </div>
+    <div className="w-full space-y-4 rounded-xl bg-white px-4 pb-4 shadow">
+      <div>
+        <h2 className="text-2xl font-semibold text-accent-200">Summary</h2>
+        <hr className="bg-secondary-200 my-2 h-[1px] border-none" />
+      </div>
+      <div className="flex w-full items-center justify-between">
+        <p className="text-secondary-100">Initial Deposite</p>
+        <p className="text-accent-200 text-lg font-medium">
+          {result.amount} Baht
+        </p>
+      </div>
+      <div className="flex w-full items-center justify-between">
+        <p className="text-secondary-100">Interest</p>
+        <p className="text-accent-200 text-lg font-medium">
+          {result.interest} Baht
+        </p>
+      </div>
+      <div className="flex w-full items-center justify-between">
+        <p className="text-secondary-100">Days</p>
+        <p className="text-accent-200 text-lg font-medium">{result.day} Days</p>
+      </div>
+      <div className="flex w-full items-center justify-between">
+        <p className="text-secondary-100">Total Value</p>
+        <p className="text-accent-200 text-lg font-medium">
+          {result.total} Baht
+        </p>
       </div>
 
-      <div className="divider"></div>
-      <div className="flex w-full items-end justify-between">
-        <p className="text-primary">Total Value</p>
-        <p className="text-3xl font-medium text-primary">{result.total}</p>
-      </div>
+      <hr className="bg-secondary-200 my-2 h-[1px] border-none" />
 
-      <div
-        role="alert"
-        className="flex justify-between rounded-xs bg-base-300 p-3"
-      >
-        <span>Interest Earned</span>
-        <span>
+      <div className="flex w-full items-center justify-between">
+        <p className="text-secondary-100">Interest Earned</p>
+        <p className="text-accent-200 text-lg font-medium">
           {isNaN(interestDif(result.total, result.amount))
             ? null
-            : interestDif(result.total, result.amount)}
-        </span>
+            : interestDif(result.total, result.amount)}{" "}
+          Bath
+        </p>
       </div>
-    </section>
+    </div>
   );
 };
 

@@ -1,199 +1,155 @@
 "use client";
 import React, { useState } from "react";
-import PeopleSelection from "./PeopleSelection";
-import { usePeople } from "@/contexts/sharebill/PeopleContext";
+import OrderForm from "./OrderForm";
 import { useOrder } from "@/contexts/sharebill/OrderContext";
-
-const inputsInit = { price: 0, quantity: 1, people: [] };
+import { Modal } from "./Modal";
 
 const OrderCreate = () => {
+  const [open, setOpen] = useState<boolean>(false);
   const { setOrder } = useOrder();
-  const { people } = usePeople();
-  const [inputs, setInputs] = useState<any>(inputsInit);
 
-  const filteredPeople = people.filter((p: any) => {
-    return inputs?.people?.includes(p);
-  });
-
-  const handleChange = (event: any) => {
-    const { name, value } = event.target;
-
+  const handleSubmit = (order: any) => {
+    const total = order.price * order.quantity;
+    const price = total / order.people.length;
     const generatedId = Math.floor(Date.now() * Math.random());
 
-    if (name !== "name") {
-      const numValue = !isNaN(value) ? parseFloat(value) : value;
-      setInputs({
-        ...inputs,
-        id: generatedId,
-        [name]: numValue,
-      });
-    } else {
-      setInputs({
-        ...inputs,
-        id: generatedId,
-        [name]: value,
-      });
-    }
-  };
-
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-
-    const total = inputs.price * inputs.quantity;
-    const price = total / inputs.people.length;
-
     const newOrder = {
-      ...inputs,
+      ...order,
+      id: generatedId,
       total: total,
       price_per_people: price,
     };
 
-    setOrder((prev: any) => [...prev, newOrder]);
-    setInputs(inputsInit);
-  };
-
-  const handleCountClick = (event: any, type: any) => {
-    event.preventDefault();
-
-    if (type === "increase") {
-      setInputs({ ...inputs, quantity: inputs.quantity + 1 });
-    } else if (type === "decrease" && inputs.quantity > 1) {
-      setInputs({ ...inputs, quantity: inputs.quantity - 1 });
-    }
-  };
-
-  const handleSelectedPeople = (person: any, action: string) => {
-    if (action === "add") {
-      if (!inputs.people.includes(person.name)) {
-        setInputs({ ...inputs, people: [...inputs.people, person] });
-      }
-    }
-  };
-
-  const handleRemovePeople = (person: any) => {
-    setInputs({
-      ...inputs,
-      people: inputs.people.filter((p: any) => p.id !== person.id),
+    setOrder((prev: any) => {
+      const updated = [...prev, newOrder];
+      localStorage.setItem("order", JSON.stringify(updated));
+      return updated;
     });
+    setOpen(false);
   };
-
-  const isDisable = inputs.quantity <= 1;
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <h2 className="text-lg font-medium">Create</h2>
-      <label className="block">
-        <p className="select-none">Menu</p>
-        <input
-          name="name"
-          type="text"
-          autoComplete="off"
-          required
-          onChange={(e) => handleChange(e)}
-          value={inputs.name || ""}
-          className="input input-bordered input-primary w-full"
-        />
-      </label>
+    <>
+      <Modal
+        open={open}
+        onClose={() => {
+          setOpen(false);
+        }}
+      >
+        <OrderForm onSubmit={handleSubmit} onClose={() => setOpen(false)} />
+      </Modal>
 
-      <label className="relative block">
-        <p className="select-none">Price</p>
-        <input
-          name="price"
-          type="number"
-          autoComplete="off"
-          required
-          onChange={(e) => handleChange(e)}
-          value={inputs.price || ""}
-          className="peer input input-bordered input-primary w-full"
-        />
-        <p className="pointer-events-none invisible absolute bottom-0 right-1 select-none border-l border-l-slate-400 px-2 peer-valid:visible peer-focus-visible:visible">
-          THB
-        </p>
-      </label>
+      <button
+        onClick={() => setOpen(true)}
+        className="btn bg-primary w-fit transition-shadow hover:shadow-lg"
+      >
+        Add New Order
+      </button>
 
-      <label className="block">
-        <p className="select-none">Quantity</p>
-        <div className="flex gap-4">
+      {/* 
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4 rounded-xl bg-white p-4 shadow"
+      >
+        <h2 className="text-secondary-100 font-medium">Add New Order</h2>
+        <label className="block">
+          <p className="text-secondary-100 select-none">Menu</p>
           <input
-            name="quantity"
+            name="name"
+            type="text"
+            autoComplete="off"
+            required
+            onChange={(e) => handleChange(e)}
+            value={inputs.name || ""}
+            className="input w-full"
+          />
+        </label>
+
+        <label className="relative block">
+          <p className="text-secondary-100 select-none">Price</p>
+          <input
+            name="price"
             type="number"
             autoComplete="off"
             required
             onChange={(e) => handleChange(e)}
-            value={inputs.quantity || ""}
-            className="input input-bordered input-primary order-1 w-full"
+            value={inputs.price || ""}
+            className="peer input w-full"
           />
-          <button
-            disabled={isDisable}
-            onClick={(e) => handleCountClick(e, "decrease")}
-            className={`btn btn-primary order-2`}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1}
-              stroke="currentColor"
-              className="size-6"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14" />
-            </svg>
-          </button>
+          <p className="pointer-events-none invisible absolute top-1/2 right-1 border-l border-l-slate-400 px-2 select-none peer-valid:visible peer-focus-visible:visible">
+            THB
+          </p>
+        </label>
 
-          <button
-            onClick={(e) => handleCountClick(e, "increase")}
-            className="btn btn-primary order-3"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1}
-              stroke="currentColor"
-              className="size-6"
+        <label className="block">
+          <p className="text-secondary-100 select-none">Quantity</p>
+          <div className="flex gap-4">
+            <input
+              name="quantity"
+              type="number"
+              autoComplete="off"
+              required
+              onChange={(e) => handleChange(e)}
+              value={inputs.quantity || ""}
+              className="input w-full"
+            />
+            <button
+              disabled={isDisable}
+              onClick={(e) => handleCountClick(e, "decrease")}
+              className="btn bg-accent-200 order-2"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 4.5v15m7.5-7.5h-15"
+              <MinusIcon className="size-4" />
+            </button>
+
+            <button
+              onClick={(e) => handleCountClick(e, "increase")}
+              className="btn bg-accent-200 order-3"
+            >
+              <PlusIcon className="size-4" />
+            </button>
+          </div>
+        </label>
+
+        <div>
+          <p className="text-secondary-100 select-none">Who Ordered</p>
+          <section className="space-y-2">
+            <div className="border-secondary-200 rounded border p-2">
+              <p className="text-secondary-100">
+                Available
+                <span className="text-secondary-100 text-xs">
+                  {" "}
+                  (Click to add)
+                </span>
+              </p>
+              <AvailableList
+                selectedPeople={handleSelectedPeople}
+                availablePeople={availablePeople}
               />
-            </svg>
-          </button>
+            </div>
+
+            {selectedPeople.length ? (
+              <div className="border-secondary-200 rounded border p-2">
+                <p className="text-secondary-100">
+                  Selected
+                  <span className="text-secondary-100 text-xs">
+                    {" "}
+                    (Click to add)
+                  </span>
+                </p>
+                <SelectedList
+                  selectedPeople={selectedPeople}
+                  removePeople={handleRemovePeople}
+                />
+              </div>
+            ) : null}
+          </section>
         </div>
-      </label>
 
-      <div>
-        <p className="select-none">People in Order</p>
-        <section>
-          <PeopleSelection
-            selectedPeople={handleSelectedPeople}
-            peopleList={filteredPeople}
-          />
-          {filteredPeople.length ? (
-            <>
-              <p>Selected</p>
-              <ul className="flex flex-wrap gap-2 p-2">
-                {filteredPeople.map((person: any) => (
-                  <li key={person.id}>
-                    <button
-                      onMouseDown={(e) => e.preventDefault()}
-                      onClick={() => handleRemovePeople(person)}
-                      className="btn btn-success hover:btn-error"
-                    >
-                      {person.name}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </>
-          ) : null}
-        </section>
-      </div>
-
-      <button type="submit" className="btn btn-primary w-full">
-        Create Order
-      </button>
-    </form>
+        <button type="submit" className="btn bg-primary font-medium">
+          Create Order
+        </button>
+      </form> */}
+    </>
   );
 };
 

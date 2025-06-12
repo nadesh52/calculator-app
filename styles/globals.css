@@ -22,4 +22,24 @@ input[type="number"] {
   --container-tablet: 768px;
   --container-desktop: 1025px;
 
+  --color-background: oklch(0.98 0 0);
+  --color-surface: oklch(0.96 0.01 260);
+  --color-primary: oklch(0.72 0.19 250);
+  --color-secondary-100: oklch(0.68 0.07 260);
+  --color-secondary-200: oklch(0.82 0.04 260);
+  --color-accent-100: oklch(0.22 0.02 270);
+  --color-accent-200: oklch(0.5 0.02 270);
+  --color-success: oklch(0.7 0.18 145);
+  --color-warning: oklch(0.82 0.21 85);
+  --color-error: oklch(0.62 0.25 30);
+}
+
+@layer components {
+  .input {
+    @apply border-secondary-200 bg-white focus-visible:ring-secondary-100 text-accent-200 w-full rounded border px-3 py-1 outline-none focus-visible:border-transparent focus-visible:ring-2;
+  }
+
+  .btn {
+    @apply cursor-pointer rounded p-2 text-white;
+  }
 }

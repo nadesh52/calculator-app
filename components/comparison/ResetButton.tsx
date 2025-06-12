@@ -5,7 +5,7 @@ const ResetButton = ({ reset }: any) => {
   return (
     <button
       onClick={() => reset([])}
-      className="flex flex-col items-center justify-center rounded-sm bg-white px-6 py-4 shadow-sm hover:bg-red-300 hover:text-white"
+      className="flex flex-col items-center cursor-pointer justify-center rounded-sm bg-white px-4 shadow-sm hover:bg-red-300 hover:text-white"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

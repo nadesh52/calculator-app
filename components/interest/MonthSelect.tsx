@@ -25,7 +25,7 @@ const MonthSelect = ({ selectedValue, label }: any) => {
       }
     };
     window.addEventListener("click", handleClick);
-  
+
     return () => {
       window.removeEventListener("click", handleClick);
     };
@@ -33,26 +33,21 @@ const MonthSelect = ({ selectedValue, label }: any) => {
 
   return (
     <label className="relative">
+      <p className="text-secondary-100 select-none">{label}</p>
       <button
         ref={listRef}
         onClick={(e) => {
           e.preventDefault();
           setIsHidden(!isHidden);
         }}
-        className="peer relative flex h-12 w-full items-center justify-between border border-primary bg-white px-3 focus:outline-hidden"
+        className="peer border-secondary-200 relative flex h-[38px] w-full items-center justify-between rounded border bg-white px-3 focus:outline-hidden"
       >
         {value !== 0 ? (
           <>
-            <span className="pointer-events-none">{value} month</span>
-
-            <span className="absolute -top-2.5 left-2 bg-white px-1 text-sm text-opacity-30">
-              {label}
-            </span>
+            <p className="pointer-events-none">{value} month</p>
           </>
         ) : (
-          <span className="pointer-events-none text-lg text-gray-500">
-            Select Month
-          </span>
+          <p className="pointer-events-none text-accent-200">Total Month</p>
         )}
 
         <ChevronDownIcon className="pointer-events-none size-6" />
@@ -61,17 +56,17 @@ const MonthSelect = ({ selectedValue, label }: any) => {
       {!isHidden && (
         <div
           ref={menuRef}
-          className="absolute left-0 top-full z-50 mt-0.5 w-max min-w-full"
+          className="absolute top-full left-0 z-50 w-max min-w-full overflow-hidden rounded shadow-lg"
         >
-          <ul className="border-grey rounded-xs border bg-white p-2 text-left shadow-md">
+          <ul className="bg-white shadow">
             {months.map((m: any, idx: number) => (
               <li
                 key={idx}
                 value={m}
                 onClick={handleClick}
-                className="cursor-default select-none rounded-xs bg-white px-4 py-2 text-primary hover:bg-primary hover:text-white"
+                className="text-accent-100 hover:bg-primary cursor-pointer bg-white px-4 py-2 select-none hover:text-white"
               >
-                <span className="pointer-events-none">{`${m} month`}</span>
+                <p className="pointer-events-none">{`${m} month`}</p>
               </li>
             ))}
           </ul>

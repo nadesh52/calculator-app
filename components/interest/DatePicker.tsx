@@ -1,22 +1,17 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 
-const DatePicker = ({ selectedValue, label = "Select Date" }: any) => {
-  const [type, setType] = useState("text");
+const DatePicker = ({ selectedValue, label, className, ...props }: any) => {
   return (
-    <label className="relative">
+    <label>
+      <p className="text-secondary-100 select-none">{label}</p>
       <input
-        type={type}
-        autoComplete="off"
+        type="date"
         required
-        onChange={(e) => selectedValue(e)}
-        onFocus={() => setType("date")}
-        onBlur={() => setType("text")}
-        className="peer h-12 w-full border border-primary bg-white px-3 text-secondary outline-hidden"
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => selectedValue(e)}
+        className={`border-secondary-200 focus-visible:ring-secondary-100 text-accent-200 w-full rounded border px-3 py-1 outline-none focus-visible:ring ${className}`}
+        {...props}
       />
-      <span className="pointer-events-none absolute -top-1 left-0 ml-2 select-none bg-white px-1 text-lg text-black text-opacity-50 transition-all peer-valid:-translate-y-5 peer-valid:text-sm peer-focus-visible:-translate-y-5 peer-focus-visible:text-sm peer-focus-visible:text-opacity-100">
-        {label}
-      </span>
     </label>
   );
 };

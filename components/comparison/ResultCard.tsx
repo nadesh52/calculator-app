@@ -31,26 +31,25 @@ const ResultCard = ({ items }: any) => {
   }, [items]);
 
   return (
-    <div className="relative bg-white rounded-sm shadow-sm py-4 px-8">
-      <div className="grow flex gap-8 items-center justify-between max-w-(--breakpoint-sm) min-[425px]:w-[350px] min-w-[250px]">
+    <div className="relative rounded-sm bg-white px-4 py-2 shadow-sm">
+      <div className="growx flex items-center justify-between gap-8">
         <div className="text-center">
-          <p className="sm:text-4xl font-medium text-slate-300">{result.number}</p>
-          <p className="text-xs text-slate-400">#</p>
+          <p className="text-5xl font-medium text-slate-300">{result.number}</p>
         </div>
         <div className="text-center">
-          <p className="sm:text-2xl font-medium">{result.quantity}</p>
+          <p className="font-medium sm:text-2xl">{result.quantity}</p>
           <p className="text-xs text-slate-400">Quantity</p>
         </div>
         <div className="text-center">
-          <p className="sm:text-2xl font-medium">{result.price}</p>
+          <p className="font-medium sm:text-2xl">{result.price}</p>
           <p className="text-xs text-slate-400">Price</p>
         </div>
         <div className="text-center">
-          <p className="sm:text-2xl font-medium">{result.count}</p>
+          <p className="font-medium sm:text-2xl">{result.count}</p>
           <p className="text-xs text-slate-400">Count</p>
         </div>
         <div className="text-center">
-          <p className="sm:text-2xl font-semibold">{result.average}</p>
+          <p className="font-semibold sm:text-2xl">{result.average}</p>
           <p className="text-xs text-slate-400">Average</p>
         </div>
       </div>

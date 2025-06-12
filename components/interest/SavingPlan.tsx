@@ -1,30 +1,29 @@
 "use client";
-import React, { useState } from "react";
+import React, { useReducer } from "react";
 import SubmitButton from "./SubmitButton";
 import DatePicker from "./DatePicker";
 import Input from "./Input";
 import { useResultContext } from "@/contexts/interest/ResultContext";
 import { getDayDiff } from "@/utils/getDayDiff";
 import { interestCalculator } from "@/utils/interestCalculator";
+import { savingInit, savingReducer } from "@/reducers/savingReducer";
 
 const SavingPlan = () => {
-  const [amount, setAmount] = useState(0);
-  const [rate, setRate] = useState(0);
-  const [startDate, setStartDate] = useState(0);
-  const [endDate, setEndDate] = useState(0);
-  const {setResult} = useResultContext();
+  const { setResult } = useResultContext();
+  const [state, dispatch] = useReducer(savingReducer, savingInit);
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const dayDiff = getDayDiff(startDate, endDate);
-    const res = interestCalculator(amount, rate, dayDiff);
+    const { amount, rate, start, end } = state;
 
-    const sum = Number(amount) + res;
+    const dayDiff = getDayDiff(start, end);
+    const interest = interestCalculator(amount, rate, dayDiff);
+    const sum = Number(amount) + interest;
 
     const result = {
-      amount: Number(amount),
-      interest: res,
+      amount: amount,
+      interest: interest,
       total: sum,
       day: dayDiff,
     };
@@ -33,48 +32,51 @@ const SavingPlan = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col space-y-8">
-      <div>
-        <Input
-          label="Amount"
-          type="number"
-          min={0}
-          required
-          onChange={(e: any) => setAmount(e.target.value)}
-        />
-      </div>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-4">
+      <Input
+        label="Amount"
+        type="number"
+        min={0}
+        required
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          dispatch({
+            type: "update",
+            payload: { amount: Number(e.target.value) },
+          })
+        }
+      />
+      <Input
+        label="Interest Rate (%)"
+        type="number"
+        min={0}
+        required
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          dispatch({
+            type: "update",
+            payload: { rate: Number(e.target.value) },
+          })
+        }
+      />
+      <DatePicker
+        label="Start Date"
+        selectedValue={(e: any) =>
+          dispatch({
+            type: "update",
+            payload: { start: new Date(e.target.value).getTime() },
+          })
+        }
+      />
+      <DatePicker
+        label="End Date"
+        selectedValue={(e: any) =>
+          dispatch({
+            type: "update",
+            payload: { end: new Date(e.target.value).getTime() },
+          })
+        }
+      />
 
-      <div>
-        <Input
-          label="Interest Rate (%)"
-          type="number"
-          min={0}
-          required
-          onChange={(e: any) => setRate(e.target.value)}
-        />
-      </div>
-
-      <div>
-        <DatePicker
-          label="Start Date"
-          selectedValue={(e: any) =>
-            setStartDate(new Date(e.target.value).getTime())
-          }
-        />
-      </div>
-
-      <div>
-        <DatePicker
-          label="End Date"
-          selectedValue={(e: any) =>
-            setEndDate(new Date(e.target.value).getTime())
-          }
-        />
-      </div>
-
-      <div>
-        <SubmitButton />
-      </div>
+      <SubmitButton />
     </form>
   );
 };

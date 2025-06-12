@@ -1,11 +1,12 @@
 "use client";
-import React, { useState } from "react";
+import React, {  useEffect, useState } from "react";
+import Input from "../interest/Input";
 
 const inputInit = {
   id: 0,
   quantity: 0,
   price: 0,
-  count: 1,
+  count: 0,
   average: 0,
 };
 
@@ -20,7 +21,23 @@ const sumAvg = (qty: number, price: number, count: number) => {
 
 const InputForm = ({ formData }: any) => {
   const [inputs, setInputs] = useState(inputInit);
-  const [itemCount, setItemCount] = useState(0);
+  const [itemCount, setItemCount] = useState(() => {
+    try {
+      const stored: any = localStorage.getItem("items");
+      const items = JSON.parse(stored) || [];
+      if (items.length === 0) return 0;
+
+      const latestItem = items.reduce(
+        (max: any, item: any) => (item.number > max.number ? item : max),
+        items[0],
+      );
+
+      return latestItem.number || 0;
+    } catch (e) {
+      console.error("Failed to load itemCount from localStorage:", e);
+      return 0;
+    }
+  });
 
   const handleChange = (event: any) => {
     const name = event.target.name;
@@ -52,55 +69,54 @@ const InputForm = ({ formData }: any) => {
     setItemCount(itemCount + 1);
   };
 
+    useEffect(() => {
+    function handleReset() {
+      setItemCount(0);
+    }
+    window.addEventListener("itemsReset", handleReset);
+    return () => window.removeEventListener("itemsReset", handleReset);
+  }, []);
+
   return (
     <form
-      className="flex items-end justify-center gap-4"
+      className="flex flex-col gap-4 rounded-xl bg-white p-4"
       onSubmit={handleSubmit}
     >
-      <label>
-        <h6 className="text-center text-sm text-white">Count</h6>
+      <Input
+        label="Count"
+        type="number"
+        name="count"
+        value={inputs.count || ""}
+        onChange={handleChange}
+        required
+        placeholder="2"
+      />
 
-        <input
-          type="number"
-          name="count"
-          value={inputs.count || ""}
-          onChange={handleChange}
-          required
-          placeholder="2"
-          className="input h-12 w-full text-center"
-        />
-      </label>
+      <Input
+        label="Quantity"
+        type="number"
+        name="quantity"
+        value={inputs.quantity || ""}
+        onChange={handleChange}
+        required
+        placeholder="1950"
+      />
 
-      <label>
-        <h6 className="text-center text-sm text-white">Quantity</h6>
+      <Input
+        label="Price"
+        type="number"
+        name="price"
+        value={inputs.price || ""}
+        onChange={handleChange}
+        required
+        placeholder="37"
+      />
 
-        <input
-          type="number"
-          name="quantity"
-          value={inputs.quantity || ""}
-          onChange={handleChange}
-          required
-          placeholder="1950"
-          className="input h-12 w-full text-center"
-        />
-      </label>
-
-      <label>
-        <h6 className="text-center text-sm text-white">Price</h6>
-
-        <input
-          type="number"
-          name="price"
-          value={inputs.price || ""}
-          onChange={handleChange}
-          required
-          placeholder="37"
-          className="input h-12 w-full text-center"
-        />
-      </label>
-
-      <button type="submit" className="btn">
-        <p className="text-lg font-medium">Add</p>
+      <button
+        type="submit"
+        className="bg-primary w-full cursor-pointer rounded p-2 text-white"
+      >
+        Add
       </button>
     </form>
   );

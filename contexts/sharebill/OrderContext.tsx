@@ -1,10 +1,11 @@
 "use client";
-import React, { ReactNode, createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, ReactNode } from "react";
 
 export const OrderContext = createContext<any | undefined>(undefined);
 
 export const OrderProvider = ({ children }: { children: ReactNode }) => {
   const [order, setOrder] = useState<any[]>([]);
+
   return (
     <OrderContext.Provider value={{ order, setOrder }}>
       {children}
@@ -14,10 +15,7 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
 
 export const useOrder = () => {
   const context = useContext(OrderContext);
-
-  if (!context) {
-    console.log("no useOrder");
-  }
-
+  if (!context)
+    throw new Error("useOrder must be used within an OrderProvider");
   return context;
 };
