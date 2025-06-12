@@ -1,5 +1,5 @@
 "use client";
-import React, {  useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Input from "../interest/Input";
 
 const inputInit = {
@@ -8,15 +8,6 @@ const inputInit = {
   price: 0,
   count: 0,
   average: 0,
-};
-
-const sumAvg = (qty: number, price: number, count: number) => {
-  const newVal = (qty * count) / price;
-  if (Number.isInteger(newVal)) {
-    return newVal;
-  } else {
-    return newVal.toFixed(2);
-  }
 };
 
 const InputForm = ({ formData }: any) => {
@@ -50,10 +41,10 @@ const InputForm = ({ formData }: any) => {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    const perPrice: any = sumAvg(inputs.quantity, inputs.price, inputs.count);
     const quantity = inputs.quantity * inputs.count;
-    const price = inputs.price * inputs.count;
-    const average = (perPrice / inputs.count).toFixed(2);
+    const price = inputs.price;
+    const perUnit = quantity / price;
+    const average = perUnit.toFixed(2);
 
     const newItem = {
       id: inputs.id,
@@ -69,7 +60,7 @@ const InputForm = ({ formData }: any) => {
     setItemCount(itemCount + 1);
   };
 
-    useEffect(() => {
+  useEffect(() => {
     function handleReset() {
       setItemCount(0);
     }
